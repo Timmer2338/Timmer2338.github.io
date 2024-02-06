@@ -31,12 +31,6 @@ menu:
   social:
     - identifier: github
       name: GitHub
-      url: https://github.com/CaiJimmy/hugo-theme-stack
+      url: https://github.com/Timmer2338
       params:
         icon: brand-github
-
-    - identifier: twitter
-      name: Twitter
-      url: https://twitter.com
-      params:
-        icon: brand-twitter
