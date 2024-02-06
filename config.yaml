@@ -18,12 +18,25 @@ params:
     lastUpdated: Jan 02, 2006 15:04 MST
 
   sidebar:
-    emoji: 🍥
+    emoji: 🍟
     subtitle: 1234567,7654321
     avatar:
       enabled: true
       local: true
       src: img/avatar.jpg
+
+  widgets:
+    homepage:
+      - type: search
+      - type: archives
+        params:
+            limit: 5
+      - type: categories
+        params:
+            limit: 10
+      - type: tag-cloud
+        params:
+            limit: 10
 
 menu:
   main: []
