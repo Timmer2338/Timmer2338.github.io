@@ -27,7 +27,7 @@ const GRAVITY = 0.9; // Acceleration in px/s
 let simSpeed = 1;
 
 function getDefaultScaleFactor() {
-	if (IS_MOBILE) return 1.5;
+	if (IS_MOBILE) return 0.9;
 	if (IS_HEADER) return 0.75;
 	return 1;
 }
@@ -116,7 +116,7 @@ const store = {
 	state: {
 		// will be unpaused in init()
 		paused: true,
-		soundEnabled: true,
+		soundEnabled: false,
 		menuOpen: false,
 		openHelpTopic: null,
 		fullscreen: isFullscreen(),
@@ -133,7 +133,7 @@ const store = {
 			autoLaunch: true,
 			finale: false,
 			skyLighting: SKY_LIGHT_NORMAL + '',
-			hideControls: true,
+			hideControls: IS_HEADER,
 			longExposure: false,
 			scaleFactor: getDefaultScaleFactor()
 		}
@@ -238,9 +238,9 @@ function togglePause(toggle) {
 
 function toggleSound(toggle) {
 	if (typeof toggle === 'boolean') {
-		store.setState(true);
+		store.setState({ soundEnabled: toggle });
 	} else {
-		store.setState(true);
+		store.setState({ soundEnabled: !store.state.soundEnabled });
 	}
 }
 
@@ -270,9 +270,9 @@ function configDidUpdate() {
 	isNormalQuality = quality === QUALITY_NORMAL;
 	isHighQuality = quality === QUALITY_HIGH;
 	
-	// if (skyLightingSelector() === SKY_LIGHT_NONE) {
-	// 	appNodes.canvasContainer.style.backgroundColor = '#000';
-	// }
+	if (skyLightingSelector() === SKY_LIGHT_NONE) {
+		appNodes.canvasContainer.style.backgroundColor = '#000';
+	}
 	
 	Spark.drawWidth = quality === QUALITY_HIGH ? 0.75 : 1;
 }
@@ -372,7 +372,7 @@ const appNodes = {
 	quality: '.quality-ui',
 	qualityLabel: '.quality-ui-label',
 	skyLighting: '.sky-lighting',
-	// skyLightingLabel: '.sky-lighting-label',
+	skyLightingLabel: '.sky-lighting-label',
 	scaleFactor: '.scaleFactor',
 	scaleFactorLabel: '.scaleFactor-label',
 	autoLaunch: '.auto-launch',
@@ -424,11 +424,11 @@ function renderApp(state) {
 	appNodes.shellSize.value = state.config.size;
 	appNodes.autoLaunch.checked = state.config.autoLaunch;
 	appNodes.finaleMode.checked = state.config.finale;
-	// appNodes.skyLighting.value = state.config.skyLighting;
+	appNodes.skyLighting.value = state.config.skyLighting;
 	appNodes.hideControls.checked = state.config.hideControls;
 	appNodes.fullscreen.checked = state.fullscreen;
 	appNodes.longExposure.checked = state.config.longExposure;
-	// appNodes.scaleFactor.value = state.config.scaleFactor.toFixed(2);
+	appNodes.scaleFactor.value = state.config.scaleFactor.toFixed(2);
 	
 	appNodes.menuInnerWrap.style.opacity = state.openHelpTopic ? 0.12 : 1;
 	appNodes.helpModal.classList.toggle('active', !!state.openHelpTopic);
@@ -465,7 +465,7 @@ function getConfigFromDOM() {
 		size: appNodes.shellSize.value,
 		autoLaunch: appNodes.autoLaunch.checked,
 		finale: appNodes.finaleMode.checked,
-		// skyLighting: appNodes.skyLighting.value,
+		skyLighting: appNodes.skyLighting.value,
 		longExposure: appNodes.longExposure.checked,
 		hideControls: appNodes.hideControls.checked,
 		// Store value as number.
@@ -479,15 +479,15 @@ appNodes.shellType.addEventListener('input', updateConfigNoEvent);
 appNodes.shellSize.addEventListener('input', updateConfigNoEvent);
 appNodes.autoLaunch.addEventListener('click', () => setTimeout(updateConfig, 0));
 appNodes.finaleMode.addEventListener('click', () => setTimeout(updateConfig, 0));
-// appNodes.skyLighting.addEventListener('input', updateConfigNoEvent);
+appNodes.skyLighting.addEventListener('input', updateConfigNoEvent);
 appNodes.longExposure.addEventListener('click', () => setTimeout(updateConfig, 0));
 appNodes.hideControls.addEventListener('click', () => setTimeout(updateConfig, 0));
 appNodes.fullscreen.addEventListener('click', () => setTimeout(toggleFullscreen, 0));
 // Changing scaleFactor requires triggering resize handling code as well.
-// appNodes.scaleFactor.addEventListener('input', () => {
-// 	updateConfig();
-// 	handleResize();
-// });
+appNodes.scaleFactor.addEventListener('input', () => {
+	updateConfig();
+	handleResize();
+});
 
 // Object.keys(nodeKeyToHelpKey).forEach(nodeKey => {
 // 	const helpKey = nodeKeyToHelpKey[nodeKey];
@@ -771,7 +771,7 @@ function shellFromConfig(size) {
 // Also, this does not create the shell, only returns the factory function.
 const fastShellBlacklist = ['Falling Leaves', 'Floral', 'Willow'];
 function randomFastShell() {
-	const isRandom = shellNameSelector() === '随机';
+	const isRandom = shellNameSelector() === 'Random';
 	let shellName = isRandom ? randomShellName() : shellNameSelector();
 	if (isRandom) {
 		while (fastShellBlacklist.includes(shellName)) {
@@ -824,18 +824,18 @@ function init() {
 		{ label: '好好好', value: QUALITY_HIGH }
 	]);
 	
-	// setOptionsForSelect(appNodes.skyLighting, [
-	// 	{ label: 'None', value: SKY_LIGHT_NONE },
-	// 	{ label: 'Dim', value: SKY_LIGHT_DIM },
-	// 	{ label: 'Normal', value: SKY_LIGHT_NORMAL }
-	// ]);
+	setOptionsForSelect(appNodes.skyLighting, [
+		{ label: '纯黑', value: SKY_LIGHT_NONE },
+		{ label: '昏暗', value: SKY_LIGHT_DIM },
+		{ label: '正常', value: SKY_LIGHT_NORMAL }
+	]);
 	
 	// 0.9 is mobile default
-	// setOptionsForSelect(
-	// 	appNodes.scaleFactor,
-	// 	[0.5, 0.62, 0.75, 0.9, 1.0, 1.5, 2.0]
-	// 	.map(value => ({ value: value.toFixed(2), label: `${value*100}%` }))
-	// );
+	setOptionsForSelect(
+		appNodes.scaleFactor,
+		[0.5, 0.62, 0.75, 0.9, 1.0, 1.5, 2.0]
+		.map(value => ({ value: value.toFixed(2), label: `${value*100}%` }))
+	);
 	
 	// Begin simulation
 	togglePause(false);
