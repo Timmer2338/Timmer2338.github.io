@@ -27,7 +27,7 @@ const GRAVITY = 0.9; // Acceleration in px/s
 let simSpeed = 1;
 
 function getDefaultScaleFactor() {
-	if (IS_MOBILE) return 0.9;
+	if (IS_MOBILE) return 1.5;
 	if (IS_HEADER) return 0.75;
 	return 1;
 }
@@ -428,7 +428,7 @@ function renderApp(state) {
 	appNodes.hideControls.checked = state.config.hideControls;
 	appNodes.fullscreen.checked = state.fullscreen;
 	appNodes.longExposure.checked = state.config.longExposure;
-	appNodes.scaleFactor.value = state.config.scaleFactor.toFixed(2);
+	// appNodes.scaleFactor.value = state.config.scaleFactor.toFixed(2);
 	
 	appNodes.menuInnerWrap.style.opacity = state.openHelpTopic ? 0.12 : 1;
 	appNodes.helpModal.classList.toggle('active', !!state.openHelpTopic);
@@ -752,7 +752,7 @@ const horsetailShell = (size=1) => {
 };
 
 function randomShellName() {
-	return Math.random() < 0.5 ? '天女散花' : shellNames[(Math.random() * (shellNames.length - 1) + 1) | 0 ];
+	return Math.random() < 0.5 ? '朴实无华' : shellNames[(Math.random() * (shellNames.length - 1) + 1) | 0 ];
 }
 
 function randomShell(size) {
@@ -831,11 +831,11 @@ function init() {
 	// ]);
 	
 	// 0.9 is mobile default
-	setOptionsForSelect(
-		appNodes.scaleFactor,
-		[0.5, 0.62, 0.75, 0.9, 1.0, 1.5, 2.0]
-		.map(value => ({ value: value.toFixed(2), label: `${value*100}%` }))
-	);
+	// setOptionsForSelect(
+	// 	appNodes.scaleFactor,
+	// 	[0.5, 0.62, 0.75, 0.9, 1.0, 1.5, 2.0]
+	// 	.map(value => ({ value: value.toFixed(2), label: `${value*100}%` }))
+	// );
 	
 	// Begin simulation
 	togglePause(false);
