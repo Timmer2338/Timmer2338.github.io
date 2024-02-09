@@ -124,14 +124,14 @@ const store = {
 		// at render time, and parsing on change.
 		config: {
 			quality: String(IS_HIGH_END_DEVICE ? QUALITY_HIGH : QUALITY_NORMAL), // will be mirrored to a global variable named `quality` in `configDidUpdate`, for perf.
-			shell: 'Random',
+			shell: '随机',
 			size: IS_DESKTOP
 				? '3' // Desktop default
 				: IS_HEADER 
 					? '1.2' // Profile header default (doesn't need to be an int)
 					: '2', // Mobile default
 			autoLaunch: true,
-			finale: true,
+			finale: false,
 			skyLighting: SKY_LIGHT_NORMAL + '',
 			hideControls: true,
 			longExposure: false,
@@ -238,9 +238,9 @@ function togglePause(toggle) {
 
 function toggleSound(toggle) {
 	if (typeof toggle === 'boolean') {
-		store.setState({ soundEnabled: toggle });
+		store.setState(true);
 	} else {
-		store.setState({ soundEnabled: !store.state.soundEnabled });
+		store.setState(true);
 	}
 }
 
@@ -270,9 +270,9 @@ function configDidUpdate() {
 	isNormalQuality = quality === QUALITY_NORMAL;
 	isHighQuality = quality === QUALITY_HIGH;
 	
-	if (skyLightingSelector() === SKY_LIGHT_NONE) {
-		appNodes.canvasContainer.style.backgroundColor = '#000';
-	}
+	// if (skyLightingSelector() === SKY_LIGHT_NONE) {
+	// 	appNodes.canvasContainer.style.backgroundColor = '#000';
+	// }
 	
 	Spark.drawWidth = quality === QUALITY_HIGH ? 0.75 : 1;
 }
@@ -340,18 +340,18 @@ const helpContent = {
 	}
 };
 
-const nodeKeyToHelpKey = {
-	shellTypeLabel: 'shellType',
-	shellSizeLabel: 'shellSize',
-	qualityLabel: 'quality',
-	skyLightingLabel: 'skyLighting',
-	scaleFactorLabel: 'scaleFactor',
-	autoLaunchLabel: 'autoLaunch',
-	finaleModeLabel: 'finaleMode',
-	hideControlsLabel: 'hideControls',
-	fullscreenLabel: 'fullscreen',
-	longExposureLabel: 'longExposure'
-};
+// const nodeKeyToHelpKey = {
+// 	shellTypeLabel: 'shellType',
+// 	shellSizeLabel: 'shellSize',
+// 	qualityLabel: 'quality',
+// 	skyLightingLabel: 'skyLighting',
+// 	scaleFactorLabel: 'scaleFactor',
+// 	autoLaunchLabel: 'autoLaunch',
+// 	finaleModeLabel: 'finaleMode',
+// 	hideControlsLabel: 'hideControls',
+// 	fullscreenLabel: 'fullscreen',
+// 	longExposureLabel: 'longExposure'
+// };
 
 
 // Render app UI / keep in sync with state
@@ -372,7 +372,7 @@ const appNodes = {
 	quality: '.quality-ui',
 	qualityLabel: '.quality-ui-label',
 	skyLighting: '.sky-lighting',
-	skyLightingLabel: '.sky-lighting-label',
+	// skyLightingLabel: '.sky-lighting-label',
 	scaleFactor: '.scaleFactor',
 	scaleFactorLabel: '.scaleFactor-label',
 	autoLaunch: '.auto-launch',
@@ -424,7 +424,7 @@ function renderApp(state) {
 	appNodes.shellSize.value = state.config.size;
 	appNodes.autoLaunch.checked = state.config.autoLaunch;
 	appNodes.finaleMode.checked = state.config.finale;
-	appNodes.skyLighting.value = state.config.skyLighting;
+	// appNodes.skyLighting.value = state.config.skyLighting;
 	appNodes.hideControls.checked = state.config.hideControls;
 	appNodes.fullscreen.checked = state.fullscreen;
 	appNodes.longExposure.checked = state.config.longExposure;
@@ -465,7 +465,7 @@ function getConfigFromDOM() {
 		size: appNodes.shellSize.value,
 		autoLaunch: appNodes.autoLaunch.checked,
 		finale: appNodes.finaleMode.checked,
-		skyLighting: appNodes.skyLighting.value,
+		// skyLighting: appNodes.skyLighting.value,
 		longExposure: appNodes.longExposure.checked,
 		hideControls: appNodes.hideControls.checked,
 		// Store value as number.
@@ -479,22 +479,22 @@ appNodes.shellType.addEventListener('input', updateConfigNoEvent);
 appNodes.shellSize.addEventListener('input', updateConfigNoEvent);
 appNodes.autoLaunch.addEventListener('click', () => setTimeout(updateConfig, 0));
 appNodes.finaleMode.addEventListener('click', () => setTimeout(updateConfig, 0));
-appNodes.skyLighting.addEventListener('input', updateConfigNoEvent);
+// appNodes.skyLighting.addEventListener('input', updateConfigNoEvent);
 appNodes.longExposure.addEventListener('click', () => setTimeout(updateConfig, 0));
 appNodes.hideControls.addEventListener('click', () => setTimeout(updateConfig, 0));
 appNodes.fullscreen.addEventListener('click', () => setTimeout(toggleFullscreen, 0));
 // Changing scaleFactor requires triggering resize handling code as well.
-appNodes.scaleFactor.addEventListener('input', () => {
-	updateConfig();
-	handleResize();
-});
+// appNodes.scaleFactor.addEventListener('input', () => {
+// 	updateConfig();
+// 	handleResize();
+// });
 
-Object.keys(nodeKeyToHelpKey).forEach(nodeKey => {
-	const helpKey = nodeKeyToHelpKey[nodeKey];
-	appNodes[nodeKey].addEventListener('click', () => {
-		store.setState({ openHelpTopic: helpKey });
-	});
-});
+// Object.keys(nodeKeyToHelpKey).forEach(nodeKey => {
+// 	const helpKey = nodeKeyToHelpKey[nodeKey];
+// 	appNodes[nodeKey].addEventListener('click', () => {
+// 		store.setState({ openHelpTopic: helpKey });
+// 	});
+// });
 
 appNodes.helpModalCloseBtn.addEventListener('click', () => {
 	store.setState({ openHelpTopic: null });
@@ -771,7 +771,7 @@ function shellFromConfig(size) {
 // Also, this does not create the shell, only returns the factory function.
 const fastShellBlacklist = ['Falling Leaves', 'Floral', 'Willow'];
 function randomFastShell() {
-	const isRandom = shellNameSelector() === 'Random';
+	const isRandom = shellNameSelector() === '随机';
 	let shellName = isRandom ? randomShellName() : shellNameSelector();
 	if (isRandom) {
 		while (fastShellBlacklist.includes(shellName)) {
@@ -783,18 +783,18 @@ function randomFastShell() {
 
 
 const shellTypes = {
-	'Random': randomShell,
-	'Crackle': crackleShell,
-	'Crossette': crossetteShell,
-	'Crysanthemum': crysanthemumShell,
-	'Falling Leaves': fallingLeavesShell,
-	'Floral': floralShell,
-	'Ghost': ghostShell,
-	'Horse Tail': horsetailShell,
-	'Palm': palmShell,
-	'Ring': ringShell,
-	'Strobe': strobeShell,
-	'Willow': willowShell
+	'随机': randomShell,
+	'子母弹青春版': crossetteShell,
+	'子母弹彩色版': floralShell,
+	'子母弹黄金版': crackleShell,
+	'朴实无华': crysanthemumShell,
+	'天女散花': fallingLeavesShell,
+	'延时礼花弹': ghostShell,
+	'气球弹': horsetailShell,
+	'椰树弹': palmShell,
+	'柳树弹': willowShell,
+	'团团圆圆': ringShell,
+	'点点星光': strobeShell
 };
 
 const shellNames = Object.keys(shellTypes);
@@ -819,16 +819,16 @@ function init() {
 	appNodes.shellSize.innerHTML = options;
 	
 	setOptionsForSelect(appNodes.quality, [
-		{ label: 'Low', value: QUALITY_LOW },
-		{ label: 'Normal', value: QUALITY_NORMAL },
-		{ label: 'High', value: QUALITY_HIGH }
+		{ label: '好', value: QUALITY_LOW },
+		{ label: '好好', value: QUALITY_NORMAL },
+		{ label: '好好好', value: QUALITY_HIGH }
 	]);
 	
-	setOptionsForSelect(appNodes.skyLighting, [
-		{ label: 'None', value: SKY_LIGHT_NONE },
-		{ label: 'Dim', value: SKY_LIGHT_DIM },
-		{ label: 'Normal', value: SKY_LIGHT_NORMAL }
-	]);
+	// setOptionsForSelect(appNodes.skyLighting, [
+	// 	{ label: 'None', value: SKY_LIGHT_NONE },
+	// 	{ label: 'Dim', value: SKY_LIGHT_DIM },
+	// 	{ label: 'Normal', value: SKY_LIGHT_NORMAL }
+	// ]);
 	
 	// 0.9 is mobile default
 	setOptionsForSelect(
@@ -2292,7 +2292,7 @@ if (IS_HEADER) {
 	init();
 } else {
 	// Allow status to render, then preload assets and start app.
-	setLoadingStatus('Lighting Fuses');
+	setLoadingStatus('正在点燃引线');
 	setTimeout(() => {
 		soundManager.preload()
 		.then(

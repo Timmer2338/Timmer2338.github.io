@@ -125,12 +125,12 @@ body {
   font-size: 2em;
   text-transform: uppercase;
 }
-.menu__subheader {
+/* .menu__subheader {
   margin-bottom: auto;
   padding-bottom: 12px;
   font-size: 0.86em;
   opacity: 0.8;
-}
+} */
 .menu form {
   width: 100%;
   max-width: 400px;
