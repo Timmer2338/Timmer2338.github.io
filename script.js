@@ -27,7 +27,7 @@ const GRAVITY = 0.9; // Acceleration in px/s
 let simSpeed = 1;
 
 function getDefaultScaleFactor() {
-	if (IS_MOBILE) return 0.9;
+	if (IS_MOBILE) return 1.5;
 	if (IS_HEADER) return 0.75;
 	return 1;
 }
