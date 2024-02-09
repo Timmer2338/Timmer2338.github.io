@@ -752,7 +752,7 @@ const horsetailShell = (size=1) => {
 };
 
 function randomShellName() {
-	return Math.random() < 0.5 ? 'Crysanthemum' : shellNames[(Math.random() * (shellNames.length - 1) + 1) | 0 ];
+	return Math.random() < 0.5 ? '天女散花' : shellNames[(Math.random() * (shellNames.length - 1) + 1) | 0 ];
 }
 
 function randomShell(size) {
